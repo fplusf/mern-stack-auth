@@ -4,3 +4,8 @@
 
 ## front-end
 /front-end/node_modules
+
+
+## system
+.DS_Store
+**/**/.DS_Store
