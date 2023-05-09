@@ -1,28 +1,34 @@
 /*
     This is just a nice custom hook that we can
     use to get all the query parameters from inside
-    our components. Don't worry about the details
-    unless you're curious :)
+    our components. It's a bit of a hack, but it works.
 */
 
 import { useLocation } from 'react-router-dom';
 
-const pairs = arr => arr.reduce((acc, x, i) => {
-    if (i % 2 === 0) {
-        return [...acc, [x]];
+const splitIntoPairs = (arr) => {
+  const pairs = arr.reduce((accumulator, currentElement, currentIndex) => {
+    if (currentIndex % 2 === 0) {
+      return [...accumulator, [currentElement]];
     } else {
-        const last = acc[acc.length - 1];
-        const everythingElse = acc.slice(0, acc.length - 1);
-        return [...everythingElse, [...last, x]];
+      const lastPair = accumulator[accumulator.length - 1];
+      const allButLastPair = accumulator.slice(0, accumulator.length - 1);
+      return [...allButLastPair, [...lastPair, currentElement]];
     }
-}, [])[0] || [];
+  }, []);
+  return pairs[0] || [];
+};
 
-const fold = arr => pairs(arr).reduce((acc, pair) => {
+const fold = (arr) => {
+  const pairs = splitIntoPairs(arr);
+  const object = pairs.reduce((accumulator, currentPair) => {
     return {
-        ...acc,
-        [pair[0]]: pair[1],
-    }
-}, {});
+      ...accumulator,
+      [currentPair[0]]: currentPair[1]
+    };
+  }, {});
+  return object;
+};
 
 export const useQueryParams = () => {
     const location = useLocation();
